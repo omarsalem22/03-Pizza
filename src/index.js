@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import App from "./App";
 
 const pizzaData = [
   {
@@ -11,6 +10,7 @@ const pizzaData = [
     photoName: "pizzas/focaccia.jpg",
     soldOut: false,
   },
+
   {
     name: "Pizza Margherita",
     ingredients: "Tomato and mozarella",
@@ -50,7 +50,7 @@ const pizzaData = [
 
 const Header = () => {
   return (
-    <div>
+    <div className="header">
       <h1>Fast React Pizza</h1>
     </div>
   );
@@ -58,41 +58,80 @@ const Header = () => {
 
 const Menu = () => {
   return (
-    <div>
+    <main className="menu">
       <h2>Our Menu</h2>
-      <Pizza />
-      <Pizza />
-      <Pizza />
-    </div>
+
+      <ul className="pizzas">
+        {pizzaData.map((pizza) => (
+          <Pizza key={pizza.name} pizza={pizza} />
+        ))}
+      </ul>
+    </main>
+  );
+};
+
+const Pizza = (props) => {
+  return (
+    <li className={props.pizza.soldOut ? 'pizza sold-out':'pizza'}>
+      <img src={props.pizza.photoName} alt={props.name} />
+      <div>
+        <h3>{props.pizza.name} </h3>
+        <p>{props.pizza.ingredients}</p>
+        <span>{props.pizza.soldOut ? "sold out" : props.pizza.price}</span>
+      </div>
+    </li>
   );
 };
 
 const Footer = () => {
+  const hour = new Date().getHours();
+  const open = 8;
+  const close = 22;
+  const isOpen = hour >= open && hour < close;
+  console.log(hour);
+
+
   return (
-    <footer> {new Date().toLocaleTimeString()} We'r Currently Open</footer>
+    <footer className="footer">
+      {isOpen ? (
+        <Order open={open} close={close} />
+        
+      ) : (
+        <p>
+          We happy to wellcome you between {open} to {close}{" "}
+        </p>
+      )}
+    </footer>
   );
 };
 
-const Pizza = () => {
+const Order = (props) => {
   return (
-    <>
-      <img src="pizzas/focaccia.jpg" alt="focaccia" />
-      <h2>Pizza Spinaci</h2>
-      <p>Tomato, mozarella, mushrooms, and onion</p>
-    </>
+    <div className="order">
+      <p>We'r currently open until {props.close}</p>
+      <button className="btn">Order</button>
+    </div>
+  );
+};
+
+const App = () => {
+  return (
+    <div className="container">
+      <Header />
+      <Menu />
+      <Footer />
+    </div>
   );
 };
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <Header />
-    <Menu />
-
-    <Footer />
+    <App />
   </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+// eslint-disable-next-line no-undef
